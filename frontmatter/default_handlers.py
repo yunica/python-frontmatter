@@ -132,7 +132,6 @@ except ImportError:
 
 from .util import u
 
-
 __all__ = ["BaseHandler", "YAMLHandler", "JSONHandler"]
 
 if toml:
@@ -206,11 +205,24 @@ class YAMLHandler(BaseHandler):
     START_DELIMITER = END_DELIMITER = "---"
 
     def load(self, fm, **kwargs):
-        """
-        Parse YAML front matter. This uses yaml.SafeLoader by default. 
-        """
+        fm = re.sub('([y|Y][e|E][s|S])', 'yeees', fm)
+        fm = re.sub('([n|N][o|O])', 'nooo', fm)
+
         kwargs.setdefault("Loader", SafeLoader)
-        return yaml.load(fm, **kwargs)
+        fm_dict = yaml.load(fm, **kwargs)
+        # hack yes - no
+        # for i in fm_dict.keys():
+        #     value_key = []
+        #     for j in fm_dict.get(i):
+        #         if j == 'yeees':
+        #             j = 'YEES'
+        #             # j..replace('eee', 'e')
+        #         if j == 'nooo':
+        #             j = 'NOO'
+        #         value_key.append(j)
+        #     fm_dict[i] = value_key
+
+        return fm_dict
 
     def export(self, metadata, **kwargs):
         """
@@ -221,6 +233,9 @@ class YAMLHandler(BaseHandler):
         kwargs.setdefault("allow_unicode", True)
 
         metadata = yaml.dump(metadata, **kwargs).strip()
+        metadata = re.sub('(nooo)', 'No', metadata)
+        metadata = re.sub('(yeees)', 'Yes', metadata)
+
         return u(metadata)  # ensure unicode
 
 
