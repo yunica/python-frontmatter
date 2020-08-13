@@ -17,7 +17,7 @@ VERSION = "0.5.0"
 
 
 setup(
-    name="python-frontmatter",
+    name="python-frontmatter-custom",
     version=VERSION,
     description="Parse and manage posts with YAML (or other) frontmatter",
     long_description=readme,
